@@ -12,7 +12,7 @@ export default function Home() {
 
   const [editParecer, setEditParecer] = useState(false)
   const [pareceres, setPareceres] = useState([])
-  const [created, setCreated] = useState(false)
+  const [reload, setReload] = useState(false)
 
   const notify = (error) => {
     toast(error)
@@ -24,12 +24,14 @@ export default function Home() {
       .then(res => res.json())
       .then(data => setPareceres(data))
       .catch(err => notify('Erro ao carregar pareceres'))
-  }, [created])
+  }, [reload])
 
+
+  const handleReload = () => setReload(!reload);
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer aria-label={undefined} />
 
       <h1 className="text-3xl">Gerador de Parecer</h1>
 
@@ -50,7 +52,7 @@ export default function Home() {
         </div>
 
         <div className="flex justify-center items-center my-4">
-          {!editParecer ? <button onClick={async () => {
+          {!editParecer ? <button onClick={() => {
             fetch('http://localhost:8080/parecer', {
               method: 'POST',
               body: JSON.stringify({
@@ -65,11 +67,11 @@ export default function Home() {
                 setCreci('')
                 setContent('')
                 setParecerId('')
-                setCreated(!created)
+                handleReload()
               }).
               catch(err => notify('Erro ao gerar parecer'))
           }} className="flex border rounded-xl dark:bg-gray-700 bg-gray-100 py-2 px-4">Gerar Parecer</button> :
-            <button onClick={async () => {
+            <button onClick={() => {
               fetch(`http://localhost:8080/parecer?id=${parecerId}`, {
                 method: 'PUT',
                 body: JSON.stringify({
