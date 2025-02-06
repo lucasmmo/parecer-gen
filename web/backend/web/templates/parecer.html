@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parecer Imobiliário</title>
+</head>
+
+<body>
+    <header
+        style="display: flex; justify-self: center; align-items: center; flex-direction: column; margin-top: 10px; gap: 1px;">
+        <span>{{ .User }}</span>
+        <br>
+        <span>Corretor de Imóveis {{ .CreciStr }} </span>
+        <br>
+        <span>PARECER SOBRE PREÇO DE COMERCIALIZAÇÃO</span>
+    </header>
+    <main>
+        <pre>
+            {{ .Content }}
+        </pre>
+    </main>
+    <footer style="display: flex; flex-direction: column; align-items: center;">
+        <span>São Paulo, {{ .DateStr }}</span>
+        <br>
+        <p>_____________________________</p>
+    </footer>
+</body>
+
+</html>

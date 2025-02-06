@@ -1,0 +1,44 @@
+services:
+  # localstack:
+  #   image: localstack/localstack
+  #   ports:
+  #     - "127.0.0.1:4566:4566"
+  #     - "127.0.0.1:4510-4559:4510-4559"
+  #   environment:
+  #     - DEBUG=${DEBUG:-0}
+  #   volumes:
+  #     - ./localstack/volume/:/var/lib/localstack
+  #     - "/var/run/docker.sock:/var/run/docker.sock"
+
+  backend:
+    build: ./web/backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - AWS_ACCESS_KEY_ID=YOUR_AKID
+      - AWS_SECRET_ACCESS_KEY=YOUR_SECRET_KEY
+      - AWS_SESSION_TOKEN=TOKEN
+      - IN_DOCKER=true
+    volumes:
+      - ./web/backend/web/templates:/app/templates
+
+  postgres:
+    image: postgres:latest
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 3s
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata:/var/lib/postgresql/data
