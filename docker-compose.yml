@@ -23,8 +23,6 @@ services:
       - DB_USER=postgres
       - DB_PASSWORD=postgres
       - DB_NAME=postgres
-    volumes:
-      - ./web/backend/web/templates:/app/templates
 
   postgres:
     image: postgres:latest

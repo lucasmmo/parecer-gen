@@ -17,8 +17,9 @@ ENV LANG en_US.utf8
 
 COPY --from=build /web /web
 
-COPY ./templates /templates
 
 WORKDIR /app
+COPY ./templates templates/
+
 EXPOSE 8080
 CMD ["/web"]
