@@ -61,7 +61,7 @@ export default function Home() {
             }).
               then(res => {
                 if (res.status != 201) {
-                  notify("Erro no servidor para criar parecer")
+                  notify("Erro no para criar parecer, codigo " + res.status)
                 }
                 setUser('')
                 setCreci('')
@@ -69,7 +69,7 @@ export default function Home() {
                 setParecerId('')
                 handleReload()
               }).
-              catch(err => notify('Erro ao gerar parecer'))
+              catch(err => notify('Erro ao mandar parecer ' + err))
           }} className="flex border rounded-xl dark:bg-gray-700 bg-gray-100 py-2 px-4">Gerar Parecer</button> :
             <button onClick={() => {
               fetch(`http://localhost:8080/parecer?id=${parecerId}`, {
@@ -77,8 +77,17 @@ export default function Home() {
                 body: JSON.stringify({
                   user, creci, content
                 })
+              }).then(res => {
+                if (res.status != 200) {
+                  notify("Erro no servidor para atualizar parecer")
+                }
+                setUser('')
+                setCreci('')
+                setContent('')
+                setParecerId('')
+                handleReload()
               }).catch(err => {
-                notify('Erro ao editar parecer')
+                notify('Erro ao editar parecer ' + err)
                 setUser('')
                 setCreci('')
                 setContent('')
@@ -91,13 +100,13 @@ export default function Home() {
 
         <ul className="flex justify-center flex-col gap-y-4">
           {pareceres && pareceres.map((parecer) => (
-            <li key={parecer.id} className="flex justify-between gap-4">
+            <li key={parecer.id} className="flex gap-4  w-full">
               <div className="p-4 border rounded bg-gray-100 w-full dark:bg-gray-700">
                 <p><strong>Usuário:</strong> {parecer.user}</p>
                 <p><strong>Creci:</strong> {parecer.creci}</p>
                 <p><strong>Data:</strong> {parecer.date}</p>
               </div>
-              <div className="flex flex-col md:flex-row gap-4 justify-center">
+              <div className="flex flex-col md:flex-row gap-4 justify-evenly">
                 <a className="flex items-center p-4 border rounded bg-gray-100 dark:bg-gray-700 " href={`http://localhost:8080/parecer?id=${parecer.id}`} target="_blank">Baixar</a>
                 <div className="flex items-center p-4 border rounded bg-gray-100 dark:bg-gray-700" onClick={() => {
                   setUser(parecer.user)
@@ -106,6 +115,16 @@ export default function Home() {
                   setParecerId(parecer.id)
                   setEditParecer(true)
                 }}>Editar</div>
+                <div className="flex items-center p-4 border rounded bg-gray-100 dark:bg-gray-700" onClick={() => {
+                  fetch(`http://localhost:8080/parecer?id=${parecer.id}`, {
+                    method: 'DELETE',
+                  }).then(res => {
+                    if (res.status != 200) {
+                      notify("Erro no servidor para deletar parecer")
+                    }
+                    handleReload()
+                  }).catch(err => notify('Erro ao deletar parecer ' + err))
+                }}>Deletar</div>
               </div>
             </li>
           ))}

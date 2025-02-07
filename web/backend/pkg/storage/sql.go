@@ -7,6 +7,8 @@ import (
 	"log"
 	"parecer-gen/pkg/date"
 	"parecer-gen/pkg/parecer"
+
+	"github.com/google/uuid"
 )
 
 type SQLClient struct {
@@ -26,9 +28,16 @@ func NewSQLClient(connStr string) SQLClient {
 	return SQLClient{DBClient: dbClient}
 }
 
+func (cli SQLClient) UpdateParecer(id string, data *parecer.Data) error {
+	if _, err := cli.DBClient.ExecContext(context.Background(), `UPDATE pareceres SET "user" = $1, creci = $2, date = $3, content = $4 WHERE id = $5`, data.User, data.Creci, data.Date, data.Content, id); err != nil {
+		return fmt.Errorf("error updating parecer into database: %w", err)
+	}
+	return nil
+}
+
 func (cli SQLClient) SaveParecer(data *parecer.Data) error {
 	dateTime := date.StringToTime(data.Date)
-	data.ID = fmt.Sprintf("parecer-%s", dateTime.Format("2-01-2006"))
+	data.ID = fmt.Sprintf("parecer-%s-%s", dateTime.Format("2-01-2006"), uuid.New().String())
 	if _, err := cli.DBClient.ExecContext(context.Background(), `INSERT INTO pareceres (id, "user", creci, date, content) VALUES ($1, $2, $3, $4, $5)`, data.ID, data.User, data.Creci, data.Date, data.Content); err != nil {
 		return fmt.Errorf("error inserting parecer into database: %w", err)
 	}
@@ -60,6 +69,13 @@ func (cli SQLClient) GetAllParecer() ([]parecer.Data, error) {
 	}
 
 	return res, nil
+}
+
+func (cli SQLClient) DeleteParecer(id string) error {
+	if _, err := cli.DBClient.ExecContext(context.Background(), `DELETE FROM pareceres WHERE id = $1`, id); err != nil {
+		return fmt.Errorf("error deleting parecer from database: %w", err)
+	}
+	return nil
 }
 
 func (cli SQLClient) GetParecer(id string) (*parecer.Data, error) {

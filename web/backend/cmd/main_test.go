@@ -12,7 +12,7 @@ func TestCreateParecer(t *testing.T) {
 
 	w := httptest.NewRecorder()
 
-	CreateParecerHandler(w, req)
+	CreateParecer(w, req)
 
 	if w.Code != 201 {
 		t.Errorf("expected status code 201, got %d", w.Code)
@@ -26,7 +26,7 @@ func TestGetParecer(t *testing.T) {
 
 	w := httptest.NewRecorder()
 
-	GetParecerHandler(w, req)
+	ReadParecer(w, req)
 
 	if w.Code != 200 {
 		t.Errorf("expected status code 200, got %d", w.Code)
