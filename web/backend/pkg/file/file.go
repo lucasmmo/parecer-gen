@@ -40,7 +40,8 @@ func GenerateParecerHTML(user, creci, dateStr, content string) (*File, error) {
 		Content:  content,
 	}
 
-	templateParecer, err := template.ParseFiles("templates/parecer.html")
+	templateParecer, err := template.ParseFiles("web/templates/parecer.html")
+
 	if err != nil {
 		return nil, fmt.Errorf("error parsing template: %v", err)
 	}
