@@ -7,6 +7,7 @@ import (
 	"html/template"
 	"io"
 	"parecer-gen/pkg/date"
+	"path/filepath"
 
 	"github.com/SebastiaanKlippert/go-wkhtmltopdf"
 	"github.com/google/uuid"
@@ -39,8 +40,12 @@ func GenerateParecerHTML(user, creci, dateStr, content string) (*File, error) {
 		DateStr:  dateStrFormatted,
 		Content:  content,
 	}
+	templatePath, err := filepath.Abs("web/templates/parecer.html")
+	if err != nil {
+		return nil, fmt.Errorf("error getting absolute path for template: %v", err)
+	}
 
-	templateParecer, err := template.ParseFiles("web/templates/parecer.html")
+	templateParecer, err := template.ParseFiles(templatePath)
 
 	if err != nil {
 		return nil, fmt.Errorf("error parsing template: %v", err)
