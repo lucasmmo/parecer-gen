@@ -6,11 +6,11 @@ import (
 )
 
 type Data struct {
-	ID      string `json:"id"`
-	User    string `json:"user"`
-	Creci   string `json:"creci"`
-	Date    string `json:"date"`
-	Content string `json:"content"`
+	ID      string    `json:"id"`
+	User    string    `json:"user"`
+	Creci   string    `json:"creci"`
+	Date    time.Time `json:"date"`
+	Content string    `json:"content"`
 }
 
 func NewData(user, creci, content string) (*Data, error) {
@@ -21,7 +21,7 @@ func NewData(user, creci, content string) (*Data, error) {
 	return &Data{
 		User:    user,
 		Creci:   creci,
-		Date:    time.Now().String(),
+		Date:    time.Now(),
 		Content: content,
 	}, nil
 }

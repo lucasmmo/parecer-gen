@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"html/template"
 	"io"
-	"parecer-gen/pkg/date"
 	"path/filepath"
+	"time"
 
 	"github.com/SebastiaanKlippert/go-wkhtmltopdf"
 	"github.com/google/uuid"
@@ -25,19 +25,17 @@ type ParecerDataHTML struct {
 	Content  string
 }
 
-func GenerateParecerHTML(user, creci, dateStr, content string) (*File, error) {
-	if user == "" || creci == "" || dateStr == "" || content == "" {
+func GenerateParecerHTML(user, creci, content string, date time.Time) (*File, error) {
+	if user == "" || creci == "" || content == "" {
 		return nil, fmt.Errorf("missing data to generate parecer")
 	}
 
-	dateTime := date.StringToTime(dateStr)
-
-	dateStrFormatted := date.TimeToBRString(dateTime)
+	dateStr := date.Format("01-02-2006")
 
 	input := ParecerDataHTML{
 		User:     user,
 		CreciStr: creci,
-		DateStr:  dateStrFormatted,
+		DateStr:  dateStr,
 		Content:  content,
 	}
 	templatePath, err := filepath.Abs("templates/parecer.html")

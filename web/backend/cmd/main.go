@@ -129,7 +129,7 @@ func ReadParecer(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/pdf")
 		w.WriteHeader(http.StatusOK)
 
-		HTMLfile, err := file.GenerateParecerHTML(data.User, data.Creci, data.Date, data.Content)
+		HTMLfile, err := file.GenerateParecerHTML(data.User, data.Creci, data.Content, data.Date)
 		if err != nil {
 			log.Println("Error generating parecer HTML", err)
 			w.WriteHeader(http.StatusInternalServerError)
