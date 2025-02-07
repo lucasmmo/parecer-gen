@@ -19,6 +19,10 @@ services:
         condition: service_healthy
     environment:
       - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=postgres
     volumes:
       - ./web/backend/web/templates:/app/templates
 

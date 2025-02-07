@@ -27,7 +27,10 @@ var (
 func init() {
 
 	dbHost := os.Getenv("DB_HOST")
-	connStr := fmt.Sprintf("host=%s port=5432 user=postgres password=postgres dbname=postgres sslmode=disable", dbHost)
+	dbUser := os.Getenv("DB_USER")
+	dbPassword := os.Getenv("DB_PASSWORD")
+	dbName := os.Getenv("DB_NAME")
+	connStr := fmt.Sprintf("host=%s port=5432 user=%s password=%s dbname=%s sslmode=disable", dbHost, dbUser, dbPassword, dbName)
 
 	dbClient = storage.NewSQLClient(connStr)
 }
