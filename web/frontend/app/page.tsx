@@ -21,7 +21,7 @@ export default function Home() {
     fetch('https://parecer-gen.onrender.com/parecer')
       .then(res => res.json())
       .then(data => setPareceres(data))
-      .catch(err => notify('Erro ao carregar pareceres'))
+      .catch(err => notify('Erro ao carregar pareceres ' + err))
   }, [reload])
 
 
