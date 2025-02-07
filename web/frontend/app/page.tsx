@@ -14,11 +14,10 @@ export default function Home() {
 
   const notify = (error) => {
     toast(error)
-
   }
 
   useEffect(() => {
-    fetch('https://parecer-gen.onrender.com/parecer')
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/parecer`)
       .then(res => res.json())
       .then(data => setPareceres(data))
       .catch(err => notify('Erro ao carregar pareceres ' + err))
@@ -51,7 +50,7 @@ export default function Home() {
 
         <div className="flex justify-center items-center my-4">
           {!editParecer ? <button onClick={() => {
-            fetch('https://parecer-gen.onrender.com/parecer', {
+            fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/parecer`, {
               method: 'POST',
               body: JSON.stringify({
                 user, creci, content
@@ -70,7 +69,7 @@ export default function Home() {
               catch(err => notify('Erro ao mandar parecer ' + err))
           }} className="flex border rounded-xl dark:bg-gray-700 bg-gray-100 py-2 px-4">Gerar Parecer</button> :
             <button onClick={() => {
-              fetch(`https://parecer-gen.onrender.com/parecer?id=${parecerId}`, {
+              fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/parecer?id=${parecerId}`, {
                 method: 'PUT',
                 body: JSON.stringify({
                   user, creci, content
@@ -105,7 +104,7 @@ export default function Home() {
                 <p><strong>Data:</strong> {parecer.date}</p>
               </div>
               <div className="flex flex-col md:flex-row gap-4 justify-evenly">
-                <a className="flex items-center p-4 border rounded bg-gray-100 dark:bg-gray-700 " href={`https://parecer-gen.onrender.com/parecer?id=${parecer.id}`} target="_blank">Baixar</a>
+                <a className="flex items-center p-4 border rounded bg-gray-100 dark:bg-gray-700 " href={`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/parecer?id=${parecer.id}`} target="_blank">Baixar</a>
                 <div className="flex items-center p-4 border rounded bg-gray-100 dark:bg-gray-700" onClick={() => {
                   setUser(parecer.user)
                   setCreci(parecer.creci)
@@ -114,7 +113,7 @@ export default function Home() {
                   setEditParecer(true)
                 }}>Editar</div>
                 <div className="flex items-center p-4 border rounded bg-gray-100 dark:bg-gray-700" onClick={() => {
-                  fetch(`https://parecer-gen.onrender.com/parecer?id=${parecer.id}`, {
+                  fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/parecer?id=${parecer.id}`, {
                     method: 'DELETE',
                   }).then(res => {
                     if (res.status != 200) {
@@ -132,4 +131,3 @@ export default function Home() {
     </>
   );
 }
-

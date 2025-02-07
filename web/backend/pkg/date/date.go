@@ -21,7 +21,7 @@ var BRMonthMap = map[time.Month]string{
 }
 
 func StringToTime(dateStr string) time.Time {
-	t, _ := time.Parse("2006-01-02", dateStr)
+	t, _ := time.Parse("2025-02-07 12:49:24.789634518 +0000 UTC m=+53.779773337", dateStr)
 	return t
 }
 

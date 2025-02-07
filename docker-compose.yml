@@ -10,6 +10,11 @@ services:
   #     - ./localstack/volume/:/var/lib/localstack
   #     - "/var/run/docker.sock:/var/run/docker.sock"
 
+  frontend:
+    build: ./web/frontend
+    ports:
+      - "3000:3000"
+
   backend:
     build: ./web/backend
     ports:
