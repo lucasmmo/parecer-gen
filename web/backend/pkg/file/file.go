@@ -40,7 +40,7 @@ func GenerateParecerHTML(user, creci, dateStr, content string) (*File, error) {
 		DateStr:  dateStrFormatted,
 		Content:  content,
 	}
-	templatePath, err := filepath.Abs("web/templates/parecer.html")
+	templatePath, err := filepath.Abs("templates/parecer.html")
 	if err != nil {
 		return nil, fmt.Errorf("error getting absolute path for template: %v", err)
 	}
