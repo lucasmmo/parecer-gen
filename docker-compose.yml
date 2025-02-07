@@ -18,10 +18,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      - AWS_ACCESS_KEY_ID=YOUR_AKID
-      - AWS_SECRET_ACCESS_KEY=YOUR_SECRET_KEY
-      - AWS_SESSION_TOKEN=TOKEN
-      - IN_DOCKER=true
+      - DB_HOST=postgres
     volumes:
       - ./web/backend/web/templates:/app/templates
 
@@ -42,3 +39,6 @@ services:
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
       - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
