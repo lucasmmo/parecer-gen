@@ -12,11 +12,31 @@ services:
 
   frontend:
     build: ./web/frontend
+    command: npm run dev
+    develop:
+      watch:
+        - action: sync
+          path: ./web/frontend
+          target: /app
+          ignore:
+            - node_modules/
     ports:
       - "3000:3000"
 
   backend:
-    build: ./web/backend
+    build:
+      context: ./web/backend
+      target: dev
+    command: air
+    develop:
+      watch:
+        - action: sync
+          path: ./web/backend
+          target: /app
+          ignore:
+            - go.sum
+        - action: rebuild
+          path: go.mod
     ports:
       - "8080:8080"
     depends_on:
