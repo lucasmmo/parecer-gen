@@ -12,13 +12,9 @@
 
         pre {
             white-space: pre-wrap;
-            /* Permite a quebra de linha dentro do <pre> */
             word-wrap: break-word;
-            /* Quebra palavras longas para evitar estouro */
             max-width: 100%;
-            /* Limita a largura máxima do <pre> */
             overflow: hidden;
-            /* Esconde o conteúdo que ultrapassa a largura máxima */
         }
     </style>
 </head>
@@ -33,9 +29,7 @@
         <span>PARECER SOBRE PREÇO DE COMERCIALIZAÇÃO</span>
     </header>
     <main>
-        <pre>
-            {{ .Content }}
-        </pre>
+        <pre>{{ .Content }}</pre>
     </main>
     <footer style="display: flex; flex-direction: column; align-items: center;">
         <span>São Paulo, {{ .DateStr }}</span>
