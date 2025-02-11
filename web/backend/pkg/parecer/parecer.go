@@ -13,15 +13,20 @@ type Data struct {
 	Content string    `json:"content"`
 }
 
-func NewData(user, creci, content string) (*Data, error) {
+func NewData(user, creci, content string, date time.Time) (*Data, error) {
+
 	if user == "" || creci == "" || content == "" {
 		return nil, fmt.Errorf("missing data to generate parecer")
+	}
+
+	if date.IsZero() {
+		date = time.Now()
 	}
 
 	return &Data{
 		User:    user,
 		Creci:   creci,
-		Date:    time.Now(),
+		Date:    date,
 		Content: content,
 	}, nil
 }

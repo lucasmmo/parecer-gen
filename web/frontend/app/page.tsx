@@ -8,6 +8,7 @@ export default function Home() {
   const [content, setContent] = useState('')
   const [parecerId, setParecerId] = useState('')
 
+  const [date, setDate] = useState('')
   const [editParecer, setEditParecer] = useState(false)
   const [pareceres, setPareceres] = useState([])
   const [isLoading, setIsLoading] = useState(true)
@@ -54,6 +55,11 @@ export default function Home() {
         </div>
 
         <div className="flex flex-col">
+          <label>Date da emissão:</label>
+          <input className="rounded p-2 dark:bg-gray-700 bg-gray-100" type="date" name="creci" id="creci" value={date} onChange={(e) => setDate(e.target.value)} />
+        </div>
+
+        <div className="flex flex-col">
           <label>Conteúdo:</label>
           <textarea className="rounded p-2 dark:bg-gray-700 bg-gray-100" name="content" id="content" rows={10} value={content} onChange={(e) => setContent(e.target.value)}></textarea>
         </div>
@@ -63,7 +69,7 @@ export default function Home() {
             fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/parecer`, {
               method: 'POST',
               body: JSON.stringify({
-                user, creci, content
+                user, creci, content, date
               })
             }).
               then(res => {
@@ -72,6 +78,7 @@ export default function Home() {
                 }
                 setUser('')
                 setCreci('')
+                setDate('')
                 setContent('')
                 setParecerId('')
                 setIsLoading(true)
@@ -83,7 +90,7 @@ export default function Home() {
               fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/parecer?id=${parecerId}`, {
                 method: 'PUT',
                 body: JSON.stringify({
-                  user, creci, content
+                  user, creci, date, content
                 })
               }).then(res => {
                 if (res.status != 200) {
@@ -92,6 +99,7 @@ export default function Home() {
                 setUser('')
                 setCreci('')
                 setContent('')
+                setDate('')
                 setParecerId('')
                 setIsLoading(true)
                 handleReload()
@@ -99,6 +107,7 @@ export default function Home() {
                 notify('Erro ao editar parecer ' + err)
                 setUser('')
                 setCreci('')
+                setDate('')
                 setContent('')
                 setParecerId('')
                 setIsLoading(true)
@@ -122,6 +131,7 @@ export default function Home() {
                   <div className="flex items-center p-4 border rounded bg-gray-100 dark:bg-gray-700" onClick={() => {
                     setUser(parecer.user)
                     setCreci(parecer.creci)
+                    setDate(new Date(parecer.date).toISOString().split('T')[0])
                     setContent(parecer.content)
                     setParecerId(parecer.id)
                     setEditParecer(true)

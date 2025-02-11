@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"html/template"
 	"io"
+	"parecer-gen/pkg/date"
 	"path/filepath"
 	"time"
 
@@ -25,12 +26,12 @@ type ParecerDataHTML struct {
 	Content  string
 }
 
-func GenerateParecerHTML(user, creci, content string, date time.Time) (*File, error) {
+func GenerateParecerHTML(user, creci, content string, dateTime time.Time) (*File, error) {
 	if user == "" || creci == "" || content == "" {
 		return nil, fmt.Errorf("missing data to generate parecer")
 	}
 
-	dateStr := date.Format("01-02-2006")
+	dateStr := date.TimeToBRString(dateTime)
 
 	input := ParecerDataHTML{
 		User:     user,

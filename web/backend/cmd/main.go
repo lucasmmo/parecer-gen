@@ -10,6 +10,7 @@ import (
 	"parecer-gen/pkg/file"
 	"parecer-gen/pkg/parecer"
 	"parecer-gen/pkg/storage"
+	"time"
 
 	_ "github.com/lib/pq"
 )
@@ -18,6 +19,7 @@ type ParecerInput struct {
 	User    string `json:"user"`
 	Creci   string `json:"creci"`
 	Content string `json:"content"`
+	Date    string `json:"date"`
 }
 
 var (
@@ -30,6 +32,14 @@ func init() {
 	dbUser := os.Getenv("DB_USER")
 	dbPassword := os.Getenv("DB_PASSWORD")
 	dbName := os.Getenv("DB_NAME")
+
+	if dbHost == "" {
+		dbHost = "localhost"
+		dbUser = "postgres"
+		dbPassword = "postgres"
+		dbName = "postgres"
+	}
+
 	connStr := fmt.Sprintf("host=%s port=5432 user=%s password=%s dbname=%s sslmode=disable", dbHost, dbUser, dbPassword, dbName)
 
 	dbClient = storage.NewSQLClient(connStr)
@@ -81,7 +91,9 @@ func CreateParecer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err := parecer.NewData(input.User, input.Creci, input.Content)
+	dateTime, _ := time.Parse("2006-01-02", input.Date)
+
+	data, err := parecer.NewData(input.User, input.Creci, input.Content, dateTime)
 	if err != nil {
 		log.Println("Error creating parecer data", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -165,7 +177,9 @@ func UpdateParecer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err := parecer.NewData(input.User, input.Creci, input.Content)
+	dateTime, _ := time.Parse("2006-01-02", input.Date)
+
+	data, err := parecer.NewData(input.User, input.Creci, input.Content, dateTime)
 	if err != nil {
 		log.Println("Error creating parecer data", err)
 		w.WriteHeader(http.StatusBadRequest)
