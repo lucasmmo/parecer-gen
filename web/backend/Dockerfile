@@ -17,6 +17,7 @@ WORKDIR /app
 COPY . .
 
 RUN go install github.com/air-verse/air@latest
+RUN apt-get update && apt-get install -y wkhtmltopdf
 
 
 FROM ubuntu:jammy AS run
