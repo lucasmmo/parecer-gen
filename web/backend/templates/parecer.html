@@ -6,13 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parecer Imobiliário</title>
     <style>
+        html,
         body {
             font-size: 20px;
+            height: 100%;
+        }
+
+        html {
+            display: table;
+            width: 100%;
+        }
+
+        body {
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle;
         }
 
         pre {
             white-space: pre-wrap;
             word-wrap: break-word;
+            overflow-y: scroll;
             max-width: 100%;
             overflow: hidden;
         }
