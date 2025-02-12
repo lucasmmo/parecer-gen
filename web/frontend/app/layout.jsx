@@ -16,7 +16,7 @@ export const metadata = {
   description: "Aplicativo para gerar pareceres de forma automática.",
 };
 
-export default function RootLayout(children) {
+export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
