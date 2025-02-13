@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 
-export default function Home() {
+export default function Page() {
   const [user, setUser] = useState('')
   const [creci, setCreci] = useState('')
   const [content, setContent] = useState('')
@@ -18,24 +18,100 @@ export default function Home() {
     toast(error)
   }
 
-  useEffect(() => {
-    getAllPareceres()
-  }, [reload])
+  const fillEditParecer = () => {
+    setUser(parecer.user)
+    setCreci(parecer.creci)
+    setDate(new Date(parecer.date).toISOString().split('T')[0])
+    setContent(parecer.content)
+    setParecerId(parecer.id)
+    setEditParecer(true)
+  }
 
-  const getAllPareceres = async () => {
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/parecer`)
-      const data = await res.json()
-      setPareceres(data)
-      setIsLoading(false)
-    } catch (err) {
-      notify('Erro ao carregar pareceres ' + err)
-    }
+  const createParecer = () => {
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/parecer`, {
+      method: 'POST',
+      body: JSON.stringify({
+        user, creci, content, date
+      })
+    })
+      .then(res => {
+        if (res.status != 201) {
+          notify("Erro no para criar parecer, codigo " + res.status)
+        }
+        setUser('')
+        setCreci('')
+        setDate('')
+        setContent('')
+        setParecerId('')
+        setIsLoading(true)
+        setReload(!reload)
+      })
+      .catch(err => notify('Erro ao mandar parecer ' + err))
+  }
+
+  const getAllPareceres = () => {
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/parecer`)
+      .then(res => {
+        if (res.status != 200) {
+          notify("Erro no servidor para carregar pareceres")
+        }
+        res.json()
+          .then(data => {
+            setPareceres(data)
+            setIsLoading(false)
+          })
+          .catch(err => notify('Erro ao carregar pareceres ' + err))
+      })
+      .catch(err => {
+        notify('Erro ao carregar pareceres ' + err)
+      })
+  }
+
+  const updateParecer = () => {
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/parecer?id=${parecerId}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        user, creci, date, content
+      })
+    }).then(res => {
+      if (res.status != 200) {
+        notify("Erro no servidor para atualizar parecer")
+      }
+      setUser('')
+      setCreci('')
+      setContent('')
+      setDate('')
+      setParecerId('')
+      setIsLoading(true)
+      setReload(!reload)
+    }).catch(err => {
+      notify('Erro ao editar parecer ' + err)
+      setUser('')
+      setCreci('')
+      setDate('')
+      setContent('')
+      setParecerId('')
+      setIsLoading(true)
+      setEditParecer(false)
+    })
+  }
+
+  const deleteParecer = () => {
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/parecer?id=${parecer.id}`, {
+      method: 'DELETE',
+    }).then(res => {
+      if (res.status != 200) {
+        notify("Erro no servidor para deletar parecer")
+      }
+      setIsLoading(true)
+      setReload(!reload)
+    }).catch(err => notify('Erro ao deletar parecer ' + err))
   }
 
 
-  const handleReload = () => setReload(!reload);
-
+  useEffect(() => {
+    getAllPareceres()
+  }, [reload])
 
   return (
     <>
@@ -65,55 +141,8 @@ export default function Home() {
         </div>
 
         <div className="flex justify-center items-center my-4">
-          {!editParecer ? <button onClick={() => {
-            fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/parecer`, {
-              method: 'POST',
-              body: JSON.stringify({
-                user, creci, content, date
-              })
-            }).
-              then(res => {
-                if (res.status != 201) {
-                  notify("Erro no para criar parecer, codigo " + res.status)
-                }
-                setUser('')
-                setCreci('')
-                setDate('')
-                setContent('')
-                setParecerId('')
-                setIsLoading(true)
-                handleReload()
-              }).
-              catch(err => notify('Erro ao mandar parecer ' + err))
-          }} className="flex border rounded-xl dark:bg-gray-700 bg-gray-100 py-2 px-4">Gerar Parecer</button> :
-            <button onClick={() => {
-              fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/parecer?id=${parecerId}`, {
-                method: 'PUT',
-                body: JSON.stringify({
-                  user, creci, date, content
-                })
-              }).then(res => {
-                if (res.status != 200) {
-                  notify("Erro no servidor para atualizar parecer")
-                }
-                setUser('')
-                setCreci('')
-                setContent('')
-                setDate('')
-                setParecerId('')
-                setIsLoading(true)
-                handleReload()
-              }).catch(err => {
-                notify('Erro ao editar parecer ' + err)
-                setUser('')
-                setCreci('')
-                setDate('')
-                setContent('')
-                setParecerId('')
-                setIsLoading(true)
-                setEditParecer(false)
-              })
-            }} className="flex border rounded-xl dark:bg-gray-700 bg-gray-100 py-2 px-4">Editar Parecer</button>
+          {!editParecer ? <button onClick={createParecer} className="flex border rounded-xl dark:bg-gray-700 bg-gray-100 py-2 px-4">Gerar Parecer</button> :
+            <button onClick={updateParecer} className="flex border rounded-xl dark:bg-gray-700 bg-gray-100 py-2 px-4">Editar Parecer</button>
           }
         </div>
 
@@ -128,25 +157,8 @@ export default function Home() {
                 </div>
                 <div className="flex flex-col md:flex-row gap-4 justify-evenly">
                   <a className="flex items-center p-4 border rounded bg-gray-100 dark:bg-gray-700 " href={`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/parecer?id=${parecer.id}`} target="_blank">Baixar</a>
-                  <div className="flex items-center p-4 border rounded bg-gray-100 dark:bg-gray-700" onClick={() => {
-                    setUser(parecer.user)
-                    setCreci(parecer.creci)
-                    setDate(new Date(parecer.date).toISOString().split('T')[0])
-                    setContent(parecer.content)
-                    setParecerId(parecer.id)
-                    setEditParecer(true)
-                  }}>Editar</div>
-                  <div className="flex items-center p-4 border rounded bg-gray-100 dark:bg-gray-700" onClick={() => {
-                    fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/parecer?id=${parecer.id}`, {
-                      method: 'DELETE',
-                    }).then(res => {
-                      if (res.status != 200) {
-                        notify("Erro no servidor para deletar parecer")
-                      }
-                      setIsLoading(true)
-                      handleReload()
-                    }).catch(err => notify('Erro ao deletar parecer ' + err))
-                  }}>Deletar</div>
+                  <div className="flex items-center p-4 border rounded bg-gray-100 dark:bg-gray-700" onClick={fillEditParecer}>Editar</div>
+                  <div className="flex items-center p-4 border rounded bg-gray-100 dark:bg-gray-700" onClick={deleteParecer}>Deletar</div>
                 </div>
               </li>
             ))}
