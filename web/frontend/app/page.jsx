@@ -14,11 +14,12 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(true)
   const [reload, setReload] = useState(false)
 
+
   const notify = (error) => {
     toast(error)
   }
 
-  const fillEditParecer = () => {
+  const fillEditParecer = (parecer) => {
     setUser(parecer.user)
     setCreci(parecer.creci)
     setDate(new Date(parecer.date).toISOString().split('T')[0])
@@ -96,7 +97,7 @@ export default function Page() {
     })
   }
 
-  const deleteParecer = () => {
+  const deleteParecer = (parecer) => {
     fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/parecer?id=${parecer.id}`, {
       method: 'DELETE',
     }).then(res => {
@@ -141,7 +142,13 @@ export default function Page() {
         </div>
 
         <div className="flex justify-center items-center my-4">
-          {!editParecer ? <button onClick={createParecer} className="flex border rounded-xl dark:bg-gray-700 bg-gray-100 py-2 px-4">Gerar Parecer</button> :
+          {!editParecer ? <button onClick={() => {
+            if (user == '' || creci == '' || content == '') {
+              notify('Preencha todos os campos')
+            } else {
+              createParecer()
+            }
+          }} className="flex border rounded-xl dark:bg-gray-700 bg-gray-100 py-2 px-4">Gerar Parecer</button> :
             <button onClick={updateParecer} className="flex border rounded-xl dark:bg-gray-700 bg-gray-100 py-2 px-4">Editar Parecer</button>
           }
         </div>
@@ -157,8 +164,14 @@ export default function Page() {
                 </div>
                 <div className="flex flex-col md:flex-row gap-4 justify-evenly">
                   <a className="flex items-center p-4 border rounded bg-gray-100 dark:bg-gray-700 " href={`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/parecer?id=${parecer.id}`} target="_blank">Baixar</a>
-                  <div className="flex items-center p-4 border rounded bg-gray-100 dark:bg-gray-700" onClick={fillEditParecer}>Editar</div>
-                  <div className="flex items-center p-4 border rounded bg-gray-100 dark:bg-gray-700" onClick={deleteParecer}>Deletar</div>
+                  <div className="flex items-center p-4 border rounded bg-gray-100 dark:bg-gray-700" onClick={() => {
+                    fillEditParecer(parecer)
+                    setEditParecer(true)
+                    window.scrollTo(0, 0)
+                  }}>Editar</div>
+                  <div className="flex items-center p-4 border rounded bg-gray-100 dark:bg-gray-700" onClick={() => {
+                    deleteParecer(parecer)
+                  }}>Deletar</div>
                 </div>
               </li>
             ))}
